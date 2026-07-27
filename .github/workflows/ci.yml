@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b # v4.6.0
+        with:
+          distribution: temurin
+          java-version: "21"
+      # Compile only; the Smoke run needs the engine artifact (Phase D).
+      - run: javac --release 21 --enable-preview -d out src/dev/intentdiff/*.java

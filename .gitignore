@@ -1,0 +1,7 @@
+out/
+*.class
+*.orig
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
