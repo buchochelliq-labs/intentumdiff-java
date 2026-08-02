@@ -1,5 +1,9 @@
 # intentdiff-java
 
+[![CI](https://github.com/buchochelliq-labs/intentdiff-java/actions/workflows/ci.yml/badge.svg)](https://github.com/buchochelliq-labs/intentdiff-java/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![JDK 21](https://img.shields.io/badge/JDK-21-red.svg)](https://openjdk.org/)
+
 The **thin Java binding** for the IntentDiff engine
 ([intentdiff-core](https://github.com/buchochelliq-labs/intentdiff-core)), built on
 java.lang.foreign (FFM): downcalls to the engine's stable C ABI (`intentdiff_call` /
