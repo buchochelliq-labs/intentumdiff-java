@@ -1,4 +1,4 @@
-package dev.intentdiff;
+package dev.intentumdiff;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
@@ -10,11 +10,11 @@ import java.lang.invoke.MethodHandle;
 import java.nio.file.Path;
 
 /**
- * The thin Java binding for the IntentDiff engine.
+ * The thin Java binding for the IntentumDiff engine.
  *
- * <p>The engine (buchochelliq-labs/intentdiff-core) ships a native shared library exposing one
- * stable C ABI: {@code intentdiff_call(name, args_json) -> heap JSON envelope} freed via
- * {@code intentdiff_free}. This binding does zero functional work — it marshals arguments to
+ * <p>The engine (buchochelliq-labs/intentumdiff-core) ships a native shared library exposing one
+ * stable C ABI: {@code intentumdiff_call(name, args_json) -> heap JSON envelope} freed via
+ * {@code intentumdiff_free}. This binding does zero functional work — it marshals arguments to
  * JSON, calls the engine via java.lang.foreign, and surfaces the {ok, result, error, error_type}
  * envelope, exactly like the Python ctypes binding.
  *
@@ -22,31 +22,31 @@ import java.nio.file.Path;
  * receive the raw envelope JSON via {@link #callRaw}; a typed layer with a JSON library lands as
  * the binding grows.
  */
-public final class IntentDiff implements AutoCloseable {
+public final class IntentumDiff implements AutoCloseable {
     private final Arena arena;
     private final MethodHandle call;
     private final MethodHandle free;
 
-    private IntentDiff(Arena arena, MethodHandle call, MethodHandle free) {
+    private IntentumDiff(Arena arena, MethodHandle call, MethodHandle free) {
         this.arena = arena;
         this.call = call;
         this.free = free;
     }
 
-    /** Loads the engine shared library (intentdiff_rust_core.{dll,so,dylib}). */
-    public static IntentDiff load(Path library) {
+    /** Loads the engine shared library (intentumdiff_rust_core.{dll,so,dylib}). */
+    public static IntentumDiff load(Path library) {
         Arena arena = Arena.ofShared();
         SymbolLookup lookup = SymbolLookup.libraryLookup(library, arena);
         Linker linker = Linker.nativeLinker();
         MethodHandle call = linker.downcallHandle(
-                lookup.find("intentdiff_call").orElseThrow(
-                        () -> new IllegalStateException("intentdiff_call not exported")),
+                lookup.find("intentumdiff_call").orElseThrow(
+                        () -> new IllegalStateException("intentumdiff_call not exported")),
                 FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS));
         MethodHandle free = linker.downcallHandle(
-                lookup.find("intentdiff_free").orElseThrow(
-                        () -> new IllegalStateException("intentdiff_free not exported")),
+                lookup.find("intentumdiff_free").orElseThrow(
+                        () -> new IllegalStateException("intentumdiff_free not exported")),
                 FunctionDescriptor.ofVoid(ValueLayout.ADDRESS));
-        return new IntentDiff(arena, call, free);
+        return new IntentumDiff(arena, call, free);
     }
 
     /**
@@ -59,7 +59,7 @@ public final class IntentDiff implements AutoCloseable {
             MemorySegment cArgs = callArena.allocateUtf8String(argsJsonArray);
             MemorySegment ret = (MemorySegment) call.invoke(cName, cArgs);
             if (ret.equals(MemorySegment.NULL)) {
-                throw new IllegalStateException("intentdiff_call returned NULL");
+                throw new IllegalStateException("intentumdiff_call returned NULL");
             }
             MemorySegment sized = ret.reinterpret(Long.MAX_VALUE);
             String envelope = sized.getUtf8String(0);
@@ -68,7 +68,7 @@ public final class IntentDiff implements AutoCloseable {
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable t) {
-            throw new IllegalStateException("intentdiff_call failed", t);
+            throw new IllegalStateException("intentumdiff_call failed", t);
         }
     }
 

@@ -1,20 +1,20 @@
-package dev.intentdiff;
+package dev.intentumdiff;
 
 import java.nio.file.Path;
 
 /**
- * Scaffold smoke: {@code java --enable-preview -cp out dev.intentdiff.Smoke <path-to-core-lib>}
- * (or set INTENTDIFF_CORE_LIB). Prints the version + supports_language envelopes and exits
+ * Scaffold smoke: {@code java --enable-preview -cp out dev.intentumdiff.Smoke <path-to-core-lib>}
+ * (or set INTENTUMDIFF_CORE_LIB). Prints the version + supports_language envelopes and exits
  * non-zero on any failure.
  */
 public final class Smoke {
     public static void main(String[] args) {
-        String lib = args.length > 0 ? args[0] : System.getenv("INTENTDIFF_CORE_LIB");
+        String lib = args.length > 0 ? args[0] : System.getenv("INTENTUMDIFF_CORE_LIB");
         if (lib == null || lib.isBlank()) {
-            System.err.println("usage: Smoke <path-to-intentdiff_rust_core library>");
+            System.err.println("usage: Smoke <path-to-intentumdiff_rust_core library>");
             System.exit(2);
         }
-        try (IntentDiff engine = IntentDiff.load(Path.of(lib))) {
+        try (IntentumDiff engine = IntentumDiff.load(Path.of(lib))) {
             String version = engine.callRaw("version", "[]");
             System.out.println("version envelope: " + version);
             if (!version.contains("\"ok\":true")) {

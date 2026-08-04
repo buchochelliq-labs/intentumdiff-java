@@ -18,4 +18,4 @@ jobs:
           distribution: temurin
           java-version: "21"
       # Compile only; the Smoke run needs the engine artifact (Phase D).
-      - run: javac --release 21 --enable-preview -d out src/dev/intentdiff/*.java
+      - run: javac --release 21 --enable-preview -d out src/dev/intentumdiff/*.java
